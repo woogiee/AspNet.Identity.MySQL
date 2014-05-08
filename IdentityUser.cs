@@ -46,5 +46,11 @@ namespace AspNet.Identity.MySQL
         /// User's security stamp
         /// </summary>
         public string SecurityStamp { get; set; }
+		
+		/// <summary>
+		/// User's customer id
+		/// </summary>
+	    public int? CustomerId { get; set; }
+
     }
 }

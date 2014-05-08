@@ -63,7 +63,14 @@ namespace AspNet.Identity.MySQL
                 user.Id = row["Id"];
                 user.UserName = row["UserName"];
                 user.PasswordHash = string.IsNullOrEmpty(row["PasswordHash"]) ? null : row["PasswordHash"];
-                user.SecurityStamp = string.IsNullOrEmpty(row["SecurityStamp"]) ? null : row["SecurityStamp"]; 
+                user.SecurityStamp = string.IsNullOrEmpty(row["SecurityStamp"]) ? null : row["SecurityStamp"];
+
+	            int custId;
+
+	            if (int.TryParse(row["CustomerId"], out custId))
+	            {
+		            user.CustomerId = custId;
+	            }
             }
 
             return user;
@@ -88,6 +95,14 @@ namespace AspNet.Identity.MySQL
                 user.UserName = row["UserName"];
                 user.PasswordHash = string.IsNullOrEmpty(row["PasswordHash"]) ? null : row["PasswordHash"];
                 user.SecurityStamp = string.IsNullOrEmpty(row["SecurityStamp"]) ? null : row["SecurityStamp"];
+
+				int custId;
+
+				if (int.TryParse(row["CustomerId"], out custId))
+				{
+					user.CustomerId = custId;
+				}
+
                 users.Add(user);
             }
 
@@ -151,12 +166,13 @@ namespace AspNet.Identity.MySQL
         /// <returns></returns>
         public int Insert(IdentityUser user)
         {
-            string commandText = "Insert into Users (UserName, Id, PasswordHash, SecurityStamp) values (@name, @id, @pwdHash, @SecStamp)";
+            string commandText = "Insert into Users (UserName, Id, PasswordHash, SecurityStamp, CustomerId) values (@name, @id, @pwdHash, @SecStamp, @CustomerId)";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("@name", user.UserName);
             parameters.Add("@id", user.Id);
             parameters.Add("@pwdHash", user.PasswordHash);
             parameters.Add("@SecStamp", user.SecurityStamp);
+			parameters.Add("@CustomerId", user.CustomerId);
 
             return _database.Execute(commandText, parameters);
         }
@@ -192,12 +208,13 @@ namespace AspNet.Identity.MySQL
         /// <returns></returns>
         public int Update(IdentityUser user)
         {
-            string commandText = "Update Users set UserName = @userName, PasswordHash = @pswHash, SecurityStamp = @secStamp WHERE Id = @userId";
+            string commandText = "Update Users set UserName = @userName, PasswordHash = @pswHash, SecurityStamp = @secStamp, CustomerId = @CustomerId WHERE Id = @userId";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("@userName", user.UserName);
             parameters.Add("@pswHash", user.PasswordHash);
             parameters.Add("@secStamp", user.SecurityStamp);
             parameters.Add("@userId", user.Id);
+			parameters.Add("@CustomerId", user.CustomerId);
 
             return _database.Execute(commandText, parameters);
         }
